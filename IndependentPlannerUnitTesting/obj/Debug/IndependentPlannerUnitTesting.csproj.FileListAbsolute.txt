@@ -1,0 +1,11 @@
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\obj\Debug\IndependentPlannerUnitTesting.csprojResolveAssemblyReference.cache
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\IndependentPlannerUnitTesting.dll.config
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\IndependentPlannerUnitTesting.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\IndependentPlannerUnitTesting.pdb
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\IndependentPlannerML.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\Newtonsoft.Json.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\System.Net.Http.Formatting.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\bin\Debug\IndependentPlannerML.pdb
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\obj\Debug\IndependentPlannerUnitTesting.dll
+E:\Data\Shared_Folder\IndependentPlannerML\IndependentPlannerUnitTesting\obj\Debug\IndependentPlannerUnitTesting.pdb

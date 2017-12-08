@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 14 for Web
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndependentPlannerML", "IndependentPlannerML\IndependentPlannerML.csproj", "{3CFBA057-9ACE-47DB-A9C9-2B344C8521B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndependentPlannerUnitTesting", "IndependentPlannerUnitTesting\IndependentPlannerUnitTesting.csproj", "{87700232-32B2-4D34-A260-BE3698463E61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CFBA057-9ACE-47DB-A9C9-2B344C8521B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CFBA057-9ACE-47DB-A9C9-2B344C8521B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CFBA057-9ACE-47DB-A9C9-2B344C8521B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CFBA057-9ACE-47DB-A9C9-2B344C8521B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87700232-32B2-4D34-A260-BE3698463E61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87700232-32B2-4D34-A260-BE3698463E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87700232-32B2-4D34-A260-BE3698463E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87700232-32B2-4D34-A260-BE3698463E61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
