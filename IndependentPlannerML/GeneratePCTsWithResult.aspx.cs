@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Web.Script.Serialization;
+using System.Collections;
 
 namespace IndependentPlannerML
 {
@@ -45,9 +46,47 @@ namespace IndependentPlannerML
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            ResultofSingle();
+            try
+            {
+                DataSet Dsgrivbind = new DataSet();
+                string releaseCategory = string.Empty;
+                string HDSDCategory = string.Empty;
+                string TerritoriesCategory = string.Empty;
+                ArrayList ARelase = new ArrayList();
+                ArrayList AHDSD = new ArrayList();
+                ArrayList ATerritories = new ArrayList();
+                // binding releaase Data into ArrayList
+                foreach (int i in Drprelease.GetSelectedIndices())
+                {
+                    ARelase.Add(Drprelease.Items[i].Text);
+                }
+                // binding HDSD Data into ArrayList
+                foreach (int i in Drphdsd.GetSelectedIndices())
+                {
+                    AHDSD.Add(Drphdsd.Items[i].Text);
+                }
+                // binding Territories Data into ArrayList
+                foreach (int i in DrpTerritories.GetSelectedIndices())
+                {
+                    ATerritories.Add(DrpTerritories.Items[i].Text);
+                }
+                releaseCategory = string.Join(",", ARelase.ToArray());// Join with comma seprated release category
+                HDSDCategory = string.Join(",", AHDSD.ToArray());// Join with comma seprated release category
+                TerritoriesCategory = string.Join(",", ATerritories.ToArray());//Join with comma seprated Territories category
+                                                                               // Method 
+                Dsgrivbind= MultipleRetrivePCTs(drpstudio.SelectedValue, releaseCategory, HDSDCategory, TerritoriesCategory);
+                example.DataSource = Dsgrivbind;
+                example.DataBind();
 
+
+            }
+            catch (Exception)
+            {
+               
+            }
         }
+
+
 
 
         // Binding the Studio dropdown
@@ -300,13 +339,13 @@ namespace IndependentPlannerML
                     for (int i = 0; i < Dsunique.Tables[0].Rows.Count; i++)
                     {
                        
-                        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]) == "All")
+                        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]) == "All")
                         {
                             DsOutput = RetrivePCTs(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
+                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]));
                         }
                         else
                         {
@@ -315,7 +354,7 @@ namespace IndependentPlannerML
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
+                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]));
                         }
                        
 
@@ -331,38 +370,40 @@ namespace IndependentPlannerML
                                 sb += Platform + ",";
 
                             }
-                            string LastChar = sb.Remove(sb.Length - 1, 1);
+                            //string LastChar = sb.Remove(sb.Length - 1, 1);
 
                             //Insert each records one by one into Database
                             int result = 0;
 
                             for (int j = 0; j < DsMasterPCTs.Tables[0].Rows.Count; j++)
                             {
-                                MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"]);
+                                MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"])+ "," ;
 
                                 //string value = MPlatform.CompareTo(LastChar);
 
-                                result = LastChar.IndexOf(MPlatform.Trim());
+                                result = sb.IndexOf(MPlatform.Trim());
 
                                 if (result < 0)
                                 {
                                     STATUS = "N";
+                                    string LastChar = MPlatform.Remove(MPlatform.Length - 1, 1);
                                     Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                                        MPlatform, STATUS);
+                                        LastChar, STATUS);
                                 }
                                 else
                                 {
                                     STATUS = "Y";
+                                    string LastChar = MPlatform.Remove(MPlatform.Length - 1, 1);
                                     Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                                        MPlatform, STATUS);
+                                        LastChar, STATUS);
 
                                 }
                             }
@@ -522,7 +563,7 @@ namespace IndependentPlannerML
             }
         }
 
-        private string ResultofSingle()
+        private string ResultofSingle(string Studio,string Release,string HDSD,string Territories)
         {
             try
             {
@@ -537,89 +578,98 @@ namespace IndependentPlannerML
                 DataTable dtFinal = new DataTable();
                 dtFinal.Columns.Add("PCT");
 
-                Dsunique = RetriveInputRecords();// Binding the unique Records for combination of Studio,Release,HDSD and Territories
-                DsMasterPCTs = TBLMasterPlannerMasterChanges();// Getting Unique Records 135
-
-                if (Dsunique.Tables[0].Rows.Count > 0)
-                {
-                    for (int i = 0; i < Dsunique.Tables[0].Rows.Count; i++)
-                    {
-
-                        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]) == "All")
-                        {
-                           
-                                DsOutput = RetrivePCTs(drpstudio.SelectedValue,
-                                            Drprelease.SelectedValue,
-                                            Drphdsd.SelectedValue,
-                                            DrpTerritories.SelectedValue,
-                                            Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
-                        }
-                        else
-                        {
-
-                            DsOutput = RetrivePCTs(drpstudio.SelectedValue,
-                                            Drprelease.SelectedValue,
-                                            Drphdsd.SelectedValue,
-                                            DrpTerritories.SelectedValue,
-                                            Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
-                        }
-
-                        example.DataSource = DsOutput;
-                        example.DataBind();
+                //DsOutput = RetrivePCTs(drpstudio.SelectedValue,
+                //                            Drprelease.SelectedValue,
+                //                            Drphdsd.SelectedValue,
+                //                            DrpTerritories.SelectedValue,
+                //                            Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
 
 
-                        //if (DsOutput.Tables[0].Rows.Count > 0)
-                        //{
-                        // Insert Studio,Release, HDSD, Teritories and PCTs
-                        //string sb = "";
-
-                        //for (int j = 0; j < DsOutput.Tables[0].Rows.Count; j++)
-                        //{
-
-                        //    Platform = Convert.ToString(DsOutput.Tables[0].Rows[j]["PCT"]);
-                        //    sb += Platform + ",";
-
-                        //}
-                        // string LastChar = sb.Remove(sb.Length - 1, 1);
-
-                        //Insert each records one by one into Database
-                        //  int result = 0;
-
-                        //for (int j = 0; j < DsMasterPCTs.Tables[0].Rows.Count; j++)
-                        //{
-                        //    MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"]);
-
-                        //    //string value = MPlatform.CompareTo(LastChar);
-
-                        //    result = LastChar.IndexOf(MPlatform.Trim());
-
-                        //    if (result < 0)
-                        //    {
-                        //        STATUS = "N";
-                        //        Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                        //            MPlatform, STATUS);
-                        //    }
-                        //    else
-                        //    {
-                        //        STATUS = "Y";
-                        //        Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                        //            MPlatform, STATUS);
-
-                        //    }
-                        //}
+                //Dsunique = RetriveInputRecords();// Binding the unique Records for combination of Studio,Release,HDSD and Territories
+                //  DsMasterPCTs = TBLMasterPlannerMasterChanges();// Getting Unique Records 135
 
 
-                        //}
-                    }
-                }
+
+                //if (Dsunique.Tables[0].Rows.Count > 0)
+                //{
+                //    for (int i = 0; i < Dsunique.Tables[0].Rows.Count; i++)
+                //    {
+
+                //        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]) == "All")
+                //        {
+
+                //                DsOutput = RetrivePCTs(drpstudio.SelectedValue,
+                //                            Drprelease.SelectedValue,
+                //                            Drphdsd.SelectedValue,
+                //                            DrpTerritories.SelectedValue,
+                //                            Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
+                //        }
+                //        else
+                //        {
+
+                //            DsOutput = RetrivePCTs(drpstudio.SelectedValue,
+                //                            Drprelease.SelectedValue,
+                //                            Drphdsd.SelectedValue,
+                //                            DrpTerritories.SelectedValue,
+                //                            Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
+                //        }
+
+                //        example.DataSource = DsOutput;
+                //        example.DataBind();
+
+
+                //        //if (DsOutput.Tables[0].Rows.Count > 0)
+                //        //{
+                //        // Insert Studio,Release, HDSD, Teritories and PCTs
+                //        //string sb = "";
+
+                //        //for (int j = 0; j < DsOutput.Tables[0].Rows.Count; j++)
+                //        //{
+
+                //        //    Platform = Convert.ToString(DsOutput.Tables[0].Rows[j]["PCT"]);
+                //        //    sb += Platform + ",";
+
+                //        //}
+                //        // string LastChar = sb.Remove(sb.Length - 1, 1);
+
+                //        //Insert each records one by one into Database
+                //        //  int result = 0;
+
+                //        //for (int j = 0; j < DsMasterPCTs.Tables[0].Rows.Count; j++)
+                //        //{
+                //        //    MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"]);
+
+                //        //    //string value = MPlatform.CompareTo(LastChar);
+
+                //        //    result = LastChar.IndexOf(MPlatform.Trim());
+
+                //        //    if (result < 0)
+                //        //    {
+                //        //        STATUS = "N";
+                //        //        Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
+                //        //            MPlatform, STATUS);
+                //        //    }
+                //        //    else
+                //        //    {
+                //        //        STATUS = "Y";
+                //        //        Insertrecordschanges(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
+                //        //            Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
+                //        //            MPlatform, STATUS);
+
+                //        //    }
+                //        //}
+
+
+                //        //}
+                //    }
+                //}
 
             }
             catch (Exception ex)
@@ -1250,19 +1300,35 @@ namespace IndependentPlannerML
                 DtExpected = GeneratePCTSForMLWithParameter(Studio, Release, HDSD, Territories, Hotel, StudioType);
                 //Actual OutPut
                 DsActual = LocalDatabaseUnqiePCTswithParameter(Studio, Release, HDSD, Territories, Hotel, StudioType);
+                DtExpected.DefaultView.Sort = "platform";
+                DtExpected = DtExpected.DefaultView.ToTable();
+
+                DsActual.Tables[0].DefaultView.Sort = "PCT";
+                DsActual.Tables[0].DefaultView.ToTable();
 
                 string Predict = ConvertDatatableToCommaSeperatedValues(DtExpected, "Platform");
                 string Actual = ConvertDataSetToCommaSeperatedValues(DsActual, "PCT");
-               
-    
-                if(Predict == Actual)
+             
+
+
+                //dt.DefaultView.Sort = Column;
+
+                if (Predict == Actual)
                 {
                   
-                    InsertPCTsMatch(Studio, Release, HDSD, Territories, "Sucess");
+                    InsertPCTsMatch(Studio, Release, HDSD, Territories, "Success");
                 }
                 else
                 {
-                    InsertPCTsMatch(Studio, Release, HDSD, Territories, "Failed");
+                    if (Predict != "")
+                    {
+                        InsertPCTsMatch(Studio, Release, HDSD, Territories, "Failed");
+                    }
+                    else
+                    {
+                        InsertPCTsMatch(Studio, Release, HDSD, Territories, "NotExists");
+                    }
+                    
                 }
 
 
@@ -1300,7 +1366,7 @@ namespace IndependentPlannerML
         {
             DataSet DSS = new DataSet();
             DSS = RetriveInputRecords();
-            for (int i = 55; i < DSS.Tables[0].Rows.Count; i++)
+            for (int i = 0; i < DSS.Tables[0].Rows.Count; i++)
             {
                 OutputMatchUnmatched(Convert.ToString(DSS.Tables[0].Rows[i]["Studio"]),
                             Convert.ToString(DSS.Tables[0].Rows[i]["Release"]),
@@ -1325,6 +1391,52 @@ namespace IndependentPlannerML
 
                 //throw;
             }
+        }
+
+        // Retrieving PCTs from database for multiple user input selection
+        private DataSet MultipleRetrivePCTs(string Studio, string Release, string HDSD, string Territories)
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dt = new DataTable();
+            dt.Columns.Add("PCT");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_RetriveSTudioType", objsqlconn);
+            cmd.CommandTimeout = 12000;
+
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            cmd.Parameters.Add(new SqlParameter("@Studio", Studio));
+            cmd.Parameters.Add(new SqlParameter("@Release", Release));
+            cmd.Parameters.Add(new SqlParameter("@HDSD", HDSD));
+            cmd.Parameters.Add(new SqlParameter("@Territories", Territories));
+          
+
+
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dt.Rows.Add();
+                dt.Rows[m][0] = rdr["PCT"];
+                m++;
+
+            }
+            DataSet ds = new DataSet();
+            ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return ds;
         }
     }
 }

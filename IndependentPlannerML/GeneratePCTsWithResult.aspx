@@ -40,11 +40,23 @@
 }
  </style>
 
+ 
+
+
+
+
+
     <link href="css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="css/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/dataTables.responsive.min.js"></script>
     <script src="js/dataTables.bootstrap.min.js"></script>
+
+<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css"
+    rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<link href="http://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
+<script src="http://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/js/bootstrap-multiselect.js" type="text/javascript"></script>
     <script type="text/javascript">
         //$(function () {
         //    $('[id*=example]').prepend($("<thead></thead>").append($(this).find("tr:first"))).DataTable({
@@ -58,6 +70,23 @@
                
         //    });
         //});
+        $(function () {
+            $('[id*=Drphdsd]').multiselect({
+                includeSelectAllOption: true
+               //, nonSelectedText: '=======Select HD/SD Types===========',
+            });
+            $('[id*=DrpTerritories]').multiselect({
+                includeSelectAllOption: true
+            });
+            $('[id*=Drprelease]').multiselect({
+                includeSelectAllOption: true
+            });
+
+            
+            
+
+
+        });
     </script>
 
 </head>
@@ -79,7 +108,9 @@
                         <div class="col-sm-9">
                           
                             
-                            <asp:DropDownList ID="drpstudio" runat="server" CssClass="form-control"  required></asp:DropDownList>
+                            <asp:DropDownList ID="drpstudio" runat="server" CssClass="form-control"  required>
+                             
+                            </asp:DropDownList>
 
 
                         </div>
@@ -89,20 +120,23 @@
                         <label for="description" class="col-sm-3 control-label">Release</label>
                         <div class="col-sm-9">
                           
-                            <asp:DropDownList ID="Drprelease" runat="server" CssClass="form-control"  required></asp:DropDownList>
+                            <asp:ListBox ID="Drprelease" runat="server" CssClass="form-control" SelectionMode="Multiple" ></asp:ListBox>
                         </div>
                     </div>
                       <div class="form-group">
                         <label for="concept" class="col-sm-3 control-label">HD/SD</label>
                         <div class="col-sm-9">
-                            <asp:DropDownList ID="Drphdsd" runat="server" CssClass="form-control" required></asp:DropDownList>
+                           
+                     <asp:ListBox ID="Drphdsd" runat="server" SelectionMode="Multiple" CssClass="selectize-input items not-full has-options" >
+               
+                     </asp:ListBox>
                         </div>
                     </div> 
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Territories</label>
                         <div class="col-sm-9">
                           
-                            <asp:DropDownList ID="DrpTerritories" runat="server" CssClass="form-control"   required></asp:DropDownList>
+                            <asp:ListBox ID="DrpTerritories" runat="server" CssClass="form-control" SelectionMode="Multiple"   ></asp:ListBox>
                         </div>
                     </div> 
                     <div class="form-group">
@@ -119,9 +153,18 @@
 </div>
     <hr />
     
-       
+    <asp:Label ID="Label1" runat="server" Text="Label" Visible="false"></asp:Label>  
 
-<asp:GridView ID="example" runat="server"></asp:GridView>
+<asp:GridView ID="example" runat="server" AutoGenerateColumns="false">
+<Columns>
+    <asp:TemplateField HeaderText = "Row Number" ItemStyle-Width="100">
+        <ItemTemplate>
+            <asp:Label ID="lblRowNumber" Text='<%# Container.DataItemIndex + 1 %>' runat="server" />
+        </ItemTemplate>
+    </asp:TemplateField>
+    <asp:BoundField DataField="PCT" HeaderText="PCTs" ItemStyle-Width="150" />
+</Columns>
+</asp:GridView>
  
 
       </form>

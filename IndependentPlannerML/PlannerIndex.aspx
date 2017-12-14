@@ -75,7 +75,10 @@
                         <div class="col-sm-9">
                           
                             
-                            <asp:DropDownList ID="drpstudio" runat="server" CssClass="form-control"  required></asp:DropDownList>
+                            <asp:DropDownList ID="drpstudio" runat="server" CssClass="form-control"  required>
+
+                               
+                            </asp:DropDownList>
 
 
                         </div>

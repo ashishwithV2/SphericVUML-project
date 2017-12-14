@@ -33,12 +33,54 @@ namespace IndependentPlannerML
             }
           
         }
+        // Fetching Input data records from database
+        private DataTable StudioBinding()
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dt = new DataTable();
+            dt.Columns.Add("StudioName");
+            dt.Columns.Add("StudioCategory");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_BindStudio", objsqlconn);
+            cmd.CommandTimeout = 12000;
 
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            //cmd.Parameters.Add(new SqlParameter("@Name", MoviesName));
+
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dt.Rows.Add();
+                dt.Rows[m][0] = rdr["StudioName"];
+                dt.Rows[m][1] = rdr["StudioCategory"];
+
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dt;
+        }
 
         // Bind the Licensor dropdownlist
         private void LicenserBind()
         {
-            ListItemCollection collection = new ListItemCollection();
+            //ListItemCollection collection = new ListItemCollection();
             //collection.Add(new ListItem("-----Select-----"));
 
 
@@ -67,57 +109,62 @@ namespace IndependentPlannerML
             //collection.Add(new ListItem("Global Asylum"));
             //collection.Add(new ListItem("Lions Gate Entertainment"));
             //collection.Add(new ListItem("Screen Media Ventures"));
-            collection.Add(new ListItem("All Channel Films"));
-            collection.Add(new ListItem("Brainstorm Media"));
-            collection.Add(new ListItem("Breaking Glass Films"));
-            collection.Add(new ListItem("Breaking Glass Pictures"));
-            collection.Add(new ListItem("Broad Green Pictures"));
-            collection.Add(new ListItem("Cinedigm Entertainment"));
-            collection.Add(new ListItem("Cohen Media Group"));
-            collection.Add(new ListItem("Electric Entertainment"));
-            collection.Add(new ListItem("Epic Pictures"));
-            collection.Add(new ListItem("Factory Film Studio"));
-            collection.Add(new ListItem("Film Movement"));
-            collection.Add(new ListItem("Freestyle Digital Media"));
-            collection.Add(new ListItem("GoDigital"));
-            collection.Add(new ListItem("Green Apple Entertainment"));
-            collection.Add(new ListItem("Inception Digital Media"));
-            collection.Add(new ListItem("Inception Media Group"));
-            collection.Add(new ListItem("Juice Worldwide"));
-            collection.Add(new ListItem("Lantern Lane"));
-            collection.Add(new ListItem("Legendary"));
-            collection.Add(new ListItem("Level 33 Entertainment"));
-            collection.Add(new ListItem("Mar Vista Digital Entertainment"));
-            collection.Add(new ListItem("Maxim Media"));
-            collection.Add(new ListItem("Monterey Media"));
-            collection.Add(new ListItem("MVD Entertainment"));
-            collection.Add(new ListItem("Neon"));
-            collection.Add(new ListItem("New City Releasing"));
-            collection.Add(new ListItem("Premiere Digital"));
-            collection.Add(new ListItem("Premiere Digital Services"));
-            collection.Add(new ListItem("RLJ Entertainment"));
-            collection.Add(new ListItem("Samuel Goldwyn Films"));
-            collection.Add(new ListItem("Screen Media Films"));
-            collection.Add(new ListItem("Screen Media Ventures"));
-            collection.Add(new ListItem("Stonecutter"));
-            collection.Add(new ListItem("STX Entertainment"));
-            collection.Add(new ListItem("Syndicado"));
-            collection.Add(new ListItem("The Asylum"));
-            collection.Add(new ListItem("The Orchard"));
-            collection.Add(new ListItem("Under the Milky Way"));
-            collection.Add(new ListItem("Vertical Entertainment"));
-            collection.Add(new ListItem("Virgil Films"));
-            collection.Add(new ListItem("Vision Films"));
-            collection.Add(new ListItem("Well Go, USA"));
-
-
-
+            //collection.Add(new ListItem("All Channel Films"));
+            //collection.Add(new ListItem("Brainstorm Media"));
+            //collection.Add(new ListItem("Breaking Glass Films"));
+            //collection.Add(new ListItem("Breaking Glass Pictures"));
+            //collection.Add(new ListItem("Broad Green Pictures"));
+            //collection.Add(new ListItem("Cinedigm"));
+            //collection.Add(new ListItem("Cinedigm Entertainment"));
+            //collection.Add(new ListItem("Cohen Media Group"));
+            //collection.Add(new ListItem("Electric Entertainment"));
+            //collection.Add(new ListItem("Epic Pictures"));
+            //collection.Add(new ListItem("Factory Film Studio"));
+            //collection.Add(new ListItem("Film Movement"));
+            //collection.Add(new ListItem("Freestyle Digital Media"));
+            //collection.Add(new ListItem("GoDigital"));
+            //collection.Add(new ListItem("Green Apple Entertainment"));
+            //collection.Add(new ListItem("Inception Digital Media"));
+            //collection.Add(new ListItem("Inception Media Group"));
+            //collection.Add(new ListItem("Juice Worldwide"));
+            //collection.Add(new ListItem("Lantern Lane"));
+            //collection.Add(new ListItem("Legendary"));
+            //collection.Add(new ListItem("Level 33 Entertainment"));
+            //collection.Add(new ListItem("Mar Vista Digital Entertainment"));
+            //collection.Add(new ListItem("Maxim Media"));
+            //collection.Add(new ListItem("Monterey Media"));
+            //collection.Add(new ListItem("MVD Entertainment"));
+            //collection.Add(new ListItem("Neon"));
+            //collection.Add(new ListItem("New City Releasing"));
+            //collection.Add(new ListItem("Premiere Digital"));
+            //collection.Add(new ListItem("Premiere Digital Services"));
+            //collection.Add(new ListItem("RLJ Entertainment"));
+            //collection.Add(new ListItem("Samuel Goldwyn Films"));
+            //collection.Add(new ListItem("Screen Media Films"));
+            //collection.Add(new ListItem("Screen Media Ventures"));
+            //collection.Add(new ListItem("Stonecutter"));
+            //collection.Add(new ListItem("STX Entertainment"));
+            //collection.Add(new ListItem("Syndicado"));
+            //collection.Add(new ListItem("The Asylum"));
+            //collection.Add(new ListItem("The Orchard"));
+            //collection.Add(new ListItem("Under the Milky Way"));
+            //collection.Add(new ListItem("Vertical Entertainment"));
+            //collection.Add(new ListItem("Virgil Films"));
+            //collection.Add(new ListItem("Vision Films"));
+            //collection.Add(new ListItem("Well Go, USA"));
+            DataTable dt = new DataTable();
+            dt = StudioBinding();
+            drpstudio.DataSource = dt;
+            drpstudio.DataBind();
+            drpstudio.DataTextField = "StudioName";
+            drpstudio.DataValueField = "StudioCategory";
+            drpstudio.DataBind();
 
 
             //Pass ListItemCollection as datasource
-            drpstudio.DataSource = collection;
-            drpstudio.DataBind();
-          
+            //drpstudio.DataSource = collection;
+            //drpstudio.DataBind();
+
         }
         // Bind the Release dropdownlist
         private void ReleaseBind()
@@ -252,6 +299,7 @@ namespace IndependentPlannerML
                 dt.Columns.Add("ScoredLabels");
                 dt.Columns.Add("ScoredProbabilities");
                 DataSet dss = new DataSet();
+                //drpstudio.SelectedValue
                 dss = MasterPlannerRecords(drpstudio.SelectedValue, Drprelease.SelectedValue, Drphdsd.SelectedValue, DrpTerritories.SelectedValue);
 
                 if (dss !=null && dss.Tables[0].Rows.Count > 0)
