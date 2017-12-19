@@ -1,9 +1,0 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/IndependentPlannerML/v15/Server/sqlite3
-/IndependentPlannerUnitTesting/obj/Debug
-/MoviesPlannerDB_14122017.sql
-/MoviesPlannerDB_14122017.zip
-/.vs/IndependentPlannerML/v15
