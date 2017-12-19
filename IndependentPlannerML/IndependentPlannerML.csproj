@@ -76,6 +76,7 @@
     <Content Include="bin\Newtonsoft.Json.xml" />
     <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Net.Http.Formatting.xml" />
+    <Content Include="CommaSeparatedPCTs.aspx" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\dataTables.bootstrap.min.css" />
     <Content Include="css\jquery.dataTables.min.css" />
@@ -95,6 +96,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommaSeparatedPCTs.aspx.cs">
+      <DependentUpon>CommaSeparatedPCTs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CommaSeparatedPCTs.aspx.designer.cs">
+      <DependentUpon>CommaSeparatedPCTs.aspx</DependentUpon>
+    </Compile>
     <Compile Include="GeneratePCTsWithResult.aspx.cs">
       <DependentUpon>GeneratePCTsWithResult.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

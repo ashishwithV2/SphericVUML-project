@@ -37,7 +37,7 @@ namespace IndependentPlannerML {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Drprelease;
+        protected global::System.Web.UI.WebControls.ListBox Drprelease;
         
         /// <summary>
         /// Drphdsd control.
@@ -46,7 +46,7 @@ namespace IndependentPlannerML {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Drphdsd;
+        protected global::System.Web.UI.WebControls.ListBox Drphdsd;
         
         /// <summary>
         /// DrpTerritories control.
@@ -55,7 +55,7 @@ namespace IndependentPlannerML {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DrpTerritories;
+        protected global::System.Web.UI.WebControls.ListBox DrpTerritories;
         
         /// <summary>
         /// Button1 control.
@@ -83,6 +83,15 @@ namespace IndependentPlannerML {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button3;
+        
+        /// <summary>
+        /// Label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
         /// example control.

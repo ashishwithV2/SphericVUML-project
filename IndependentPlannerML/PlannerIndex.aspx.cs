@@ -33,12 +33,55 @@ namespace IndependentPlannerML
             }
           
         }
+        // Fetching Input data records from database
+        private DataTable StudioBinding()
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dt = new DataTable();
+            dt.Columns.Add("StudioName");
+            dt.Columns.Add("StudioCategory");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_BindStudio", objsqlconn);
+            cmd.CommandTimeout = 12000;
 
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            //cmd.Parameters.Add(new SqlParameter("@Name", MoviesName));
+
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dt.Rows.Add();
+                //dt.Rows[m][0] = rdr["StudioCategory"];
+                dt.Rows[m][0] = rdr["StudioName"];
+                dt.Rows[m][1] = rdr["StudioName"];
+
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dt;
+        }
 
         // Bind the Licensor dropdownlist
         private void LicenserBind()
         {
-            ListItemCollection collection = new ListItemCollection();
+            //ListItemCollection collection = new ListItemCollection();
             //collection.Add(new ListItem("-----Select-----"));
 
 
@@ -67,57 +110,62 @@ namespace IndependentPlannerML
             //collection.Add(new ListItem("Global Asylum"));
             //collection.Add(new ListItem("Lions Gate Entertainment"));
             //collection.Add(new ListItem("Screen Media Ventures"));
-            collection.Add(new ListItem("All Channel Films"));
-            collection.Add(new ListItem("Brainstorm Media"));
-            collection.Add(new ListItem("Breaking Glass Films"));
-            collection.Add(new ListItem("Breaking Glass Pictures"));
-            collection.Add(new ListItem("Broad Green Pictures"));
-            collection.Add(new ListItem("Cinedigm Entertainment"));
-            collection.Add(new ListItem("Cohen Media Group"));
-            collection.Add(new ListItem("Electric Entertainment"));
-            collection.Add(new ListItem("Epic Pictures"));
-            collection.Add(new ListItem("Factory Film Studio"));
-            collection.Add(new ListItem("Film Movement"));
-            collection.Add(new ListItem("Freestyle Digital Media"));
-            collection.Add(new ListItem("GoDigital"));
-            collection.Add(new ListItem("Green Apple Entertainment"));
-            collection.Add(new ListItem("Inception Digital Media"));
-            collection.Add(new ListItem("Inception Media Group"));
-            collection.Add(new ListItem("Juice Worldwide"));
-            collection.Add(new ListItem("Lantern Lane"));
-            collection.Add(new ListItem("Legendary"));
-            collection.Add(new ListItem("Level 33 Entertainment"));
-            collection.Add(new ListItem("Mar Vista Digital Entertainment"));
-            collection.Add(new ListItem("Maxim Media"));
-            collection.Add(new ListItem("Monterey Media"));
-            collection.Add(new ListItem("MVD Entertainment"));
-            collection.Add(new ListItem("Neon"));
-            collection.Add(new ListItem("New City Releasing"));
-            collection.Add(new ListItem("Premiere Digital"));
-            collection.Add(new ListItem("Premiere Digital Services"));
-            collection.Add(new ListItem("RLJ Entertainment"));
-            collection.Add(new ListItem("Samuel Goldwyn Films"));
-            collection.Add(new ListItem("Screen Media Films"));
-            collection.Add(new ListItem("Screen Media Ventures"));
-            collection.Add(new ListItem("Stonecutter"));
-            collection.Add(new ListItem("STX Entertainment"));
-            collection.Add(new ListItem("Syndicado"));
-            collection.Add(new ListItem("The Asylum"));
-            collection.Add(new ListItem("The Orchard"));
-            collection.Add(new ListItem("Under the Milky Way"));
-            collection.Add(new ListItem("Vertical Entertainment"));
-            collection.Add(new ListItem("Virgil Films"));
-            collection.Add(new ListItem("Vision Films"));
-            collection.Add(new ListItem("Well Go, USA"));
-
-
-
+            //collection.Add(new ListItem("All Channel Films"));
+            //collection.Add(new ListItem("Brainstorm Media"));
+            //collection.Add(new ListItem("Breaking Glass Films"));
+            //collection.Add(new ListItem("Breaking Glass Pictures"));
+            //collection.Add(new ListItem("Broad Green Pictures"));
+            //collection.Add(new ListItem("Cinedigm"));
+            //collection.Add(new ListItem("Cinedigm Entertainment"));
+            //collection.Add(new ListItem("Cohen Media Group"));
+            //collection.Add(new ListItem("Electric Entertainment"));
+            //collection.Add(new ListItem("Epic Pictures"));
+            //collection.Add(new ListItem("Factory Film Studio"));
+            //collection.Add(new ListItem("Film Movement"));
+            //collection.Add(new ListItem("Freestyle Digital Media"));
+            //collection.Add(new ListItem("GoDigital"));
+            //collection.Add(new ListItem("Green Apple Entertainment"));
+            //collection.Add(new ListItem("Inception Digital Media"));
+            //collection.Add(new ListItem("Inception Media Group"));
+            //collection.Add(new ListItem("Juice Worldwide"));
+            //collection.Add(new ListItem("Lantern Lane"));
+            //collection.Add(new ListItem("Legendary"));
+            //collection.Add(new ListItem("Level 33 Entertainment"));
+            //collection.Add(new ListItem("Mar Vista Digital Entertainment"));
+            //collection.Add(new ListItem("Maxim Media"));
+            //collection.Add(new ListItem("Monterey Media"));
+            //collection.Add(new ListItem("MVD Entertainment"));
+            //collection.Add(new ListItem("Neon"));
+            //collection.Add(new ListItem("New City Releasing"));
+            //collection.Add(new ListItem("Premiere Digital"));
+            //collection.Add(new ListItem("Premiere Digital Services"));
+            //collection.Add(new ListItem("RLJ Entertainment"));
+            //collection.Add(new ListItem("Samuel Goldwyn Films"));
+            //collection.Add(new ListItem("Screen Media Films"));
+            //collection.Add(new ListItem("Screen Media Ventures"));
+            //collection.Add(new ListItem("Stonecutter"));
+            //collection.Add(new ListItem("STX Entertainment"));
+            //collection.Add(new ListItem("Syndicado"));
+            //collection.Add(new ListItem("The Asylum"));
+            //collection.Add(new ListItem("The Orchard"));
+            //collection.Add(new ListItem("Under the Milky Way"));
+            //collection.Add(new ListItem("Vertical Entertainment"));
+            //collection.Add(new ListItem("Virgil Films"));
+            //collection.Add(new ListItem("Vision Films"));
+            //collection.Add(new ListItem("Well Go, USA"));
+            DataTable dt = new DataTable();
+            dt = StudioBinding();
+            drpstudio.DataSource = dt;
+            drpstudio.DataBind();
+            drpstudio.DataTextField = "StudioName";
+            drpstudio.DataValueField = "StudioCategory";
+            drpstudio.DataBind();
 
 
             //Pass ListItemCollection as datasource
-            drpstudio.DataSource = collection;
-            drpstudio.DataBind();
-          
+            //drpstudio.DataSource = collection;
+            //drpstudio.DataBind();
+
         }
         // Bind the Release dropdownlist
         private void ReleaseBind()
@@ -187,7 +235,7 @@ namespace IndependentPlannerML
             DataTable dt = new DataTable();
 
             dt.Columns.Add("Platform");
-            dt.Columns.Add("select");
+           // dt.Columns.Add("select");
             dt.Columns.Add("HDSD");
             dt.Columns.Add("Territories");
             dt.Columns.Add("Licensor");
@@ -228,12 +276,12 @@ namespace IndependentPlannerML
             {
                 dt.Rows.Add();
                 dt.Rows[m][0] = rdr["Platform"];
-                dt.Rows[m][1] = rdr["select"];
-                dt.Rows[m][2] = rdr["HDSD"];
-                dt.Rows[m][3] = rdr["Territories"];
-                dt.Rows[m][4] = rdr["Licensor"];
-                dt.Rows[m][5] = rdr["Release"];
-                dt.Rows[m][6] = rdr["Hotel"];
+                //dt.Rows[m][1] = rdr["select"];
+                dt.Rows[m][1] = rdr["HDSD"];
+                dt.Rows[m][2] = rdr["Territories"];
+                dt.Rows[m][3] = rdr["Licensor"];
+                dt.Rows[m][4] = rdr["Release"];
+                dt.Rows[m][5] = rdr["Hotel"];
                 m++;
 
             }
@@ -252,12 +300,15 @@ namespace IndependentPlannerML
                 dt.Columns.Add("ScoredLabels");
                 dt.Columns.Add("ScoredProbabilities");
                 DataSet dss = new DataSet();
+                //drpstudio.SelectedValue
                 dss = MasterPlannerRecords(drpstudio.SelectedValue, Drprelease.SelectedValue, Drphdsd.SelectedValue, DrpTerritories.SelectedValue);
 
                 if (dss !=null && dss.Tables[0].Rows.Count > 0)
                 {
                     int i = 0;
-                    var InvokeData = InvokeRequestResponseService(dss);
+                    //var InvokeData = InvokeRequestResponseService(dss); // Previous Invoke function (Without comma separated)
+
+                    var InvokeData = InvokeRequestResponseServicePCTsWithComma(dss);
                     //InvokeData.Wait();
                     //string reciveData = InvokeData.Result;
 
@@ -362,7 +413,7 @@ namespace IndependentPlannerML
                 }
          
             }
-            catch (Exception)
+            catch (Exception ex)
             {
               
             }
@@ -527,19 +578,175 @@ namespace IndependentPlannerML
             }
             return result;
         }
-    
-       
+
+
 
 
         // New way to start written code 04/12/2017 11:04AM
 
 
+        public async Task<string> InvokeRequestResponseServicePCTsWithComma(DataSet dsval)
+        {
+            List<string> arr = new List<string>();
+            //arr.Add("TVN_LIBRARY_INDEPENDENT_H264");
+            string Licenser = "";
+            string Release = "";
+            string HDSD = "";
+            string Terryterries = "";
+            string Hotel = "";
+            string Select = "";
+            for (int i = 0; i < dsval.Tables[0].Rows.Count; i++)
+            {
+                arr.Add(Convert.ToString(dsval.Tables[0].Rows[i]["Platform"]));
+
+            }
+
+            string result = "";
+            int j = 0;
+            using (var client = new HttpClient())
+            {
+
+                //dynamic abcd = null;
 
 
 
 
-       
-       
-    
+                List<Dictionary<string, string>> dictionary = new List<Dictionary<string, string>>();
+
+                foreach (var item in arr)
+                {
+                    Licenser = Convert.ToString(dsval.Tables[0].Rows[j]["Licensor"]);
+                    Release = Convert.ToString(dsval.Tables[0].Rows[j]["Release"]);
+                    HDSD = Convert.ToString(dsval.Tables[0].Rows[j]["HDSD"]);
+                    Terryterries = Convert.ToString(dsval.Tables[0].Rows[j]["Territories"]);
+                    Hotel = Convert.ToString(dsval.Tables[0].Rows[j]["Hotel"]);
+                   // Select = Convert.ToString(dsval.Tables[0].Rows[j]["Select"]);//
+                    j++;
+                    dictionary.Add(new Dictionary<string, string>()
+                            {
+                                            //{
+                                            //    "Licensor", Licenser
+                                            //},
+                                            //{
+                                            //    "Release", TextBox1.Text
+                                            //},
+                                            //{
+                                            //    "HD/SD", TextBox2.Text
+                                            //},
+                                            //{
+                                            //    "Territories", TextBox3.Text
+                                            //},
+                                            //{
+                                            //    "Hotel", "Yes"
+                                            //},
+                                            //{
+                                            //    "Platform", item
+                                            //}
+                                            //,
+                                            //{
+                                            //    "Select", null
+                                            //},
+                                              {
+                                                "Licensor", Licenser
+                                            },
+                                            {
+                                                "Release", Release
+                                            },
+                                            {
+                                                "HDSD", HDSD
+                                            },
+                                            {
+                                                "Territories", Terryterries  
+                                            },
+                                            {
+                                                "Hotel", "Yes"
+                                            },
+                                            {
+                                                "Platform", item
+                                            }
+                                          
+
+                              }
+                    );
+
+
+                }
+
+                //var abc = abcd;
+
+
+                var scoreRequest = new
+                {
+                    Inputs = new Dictionary<string, List<Dictionary<string, string>>>() {
+                        {
+                           "input1",dictionary
+
+                        },
+                    },
+                    GlobalParameters = new Dictionary<string, string>()
+                    {
+                    }
+                };
+
+
+                const string apiKey = "sDu/W7+N+14aW+i10z28+mGTh8u/ZFgqSTH8fze5nXGCyfoNs8PxaPOvC4feZWB5tfHXPft1R/oBXT0mc1otyw=="; // Replace this with the API key for the web service
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+                client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/8352056fa2664c3685bb3ee952c56e5f/execute?api-version=2.0&details=true");
+
+                //const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
+                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+                //client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+
+                //// WARNING: The 'await' statement below can result in a deadlock if you are calling this code from the UI thread of an ASP.Net application.
+                // One way to address this would be to call ConfigureAwait(false) so that the execution does not attempt to resume on the original context.
+                // For instance, replace code such as:
+                //      result = await DoSomeTask()
+                // with the following:
+                //      result = await DoSomeTask().ConfigureAwait(false)
+
+
+                HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
+                string len = Convert.ToString(response.Content.Headers.ContentLength);
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await response.Content.ReadAsStringAsync();
+
+
+                    //Label6.Text = result;
+                    // Console.WriteLine("Result: {0}", result);
+                }
+                else
+                {
+                    //Console.WriteLine(string.Format("The request failed with status code: {0}", response.StatusCode));
+
+                    // Print the headers - they include the requert ID and the timestamp, which are useful for debugging the failure
+                    //Console.WriteLine(response.Headers.ToString());
+
+                    //string responseContent = await response.Content.ReadAsStringAsync();
+                    // Console.WriteLine(responseContent);
+
+                    // Console.WriteLine(string.Format("The request failed with status code: {0}", response.StatusCode));
+
+                    // Print the headers - they include the requert ID and the timestamp,
+                    // which are useful for debugging the failure
+                    //Console.WriteLine(response.Headers.ToString());
+
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    // Label6.Text = responseContent;
+                    Console.WriteLine(responseContent);
+                }
+
+
+            }
+            return result;
+        }
+
+
+
+
+
+
     }
 }
