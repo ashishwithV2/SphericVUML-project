@@ -39,7 +39,7 @@ namespace IndependentPlannerML
                 {
                     for (int i = 0; i < Dsunique.Tables[0].Rows.Count; i++)
                     {
-                        MatchStatus = Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]);
+                        MatchStatus = Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]);
 
                         if (MatchStatus == "All")
                         {
@@ -56,7 +56,7 @@ namespace IndependentPlannerML
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]));
+                                                Convert.ToString(MatchStatus));
                         }
 
                         string LastChar = string.Empty;
