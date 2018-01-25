@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Web.Script.Serialization;
 using System.Collections;
+using System.Globalization;
 
 namespace IndependentPlannerML
 {
@@ -339,13 +340,13 @@ namespace IndependentPlannerML
                     for (int i = 0; i < Dsunique.Tables[0].Rows.Count; i++)
                     {
                        
-                        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]) == "All")
+                        if (Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]) == "All")
                         {
                             DsOutput = RetrivePCTs(Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]));
+                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
                         }
                         else
                         {
@@ -354,7 +355,7 @@ namespace IndependentPlannerML
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Release"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                                 Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
-                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["Studio"]));
+                                                Convert.ToString(Dsunique.Tables[0].Rows[i]["StudioType"]));
                         }
                        
 
@@ -379,6 +380,8 @@ namespace IndependentPlannerML
                             {
                                 MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"])+ "," ;
 
+                             //   MPlatform = Convert.ToString(DsMasterPCTs.Tables[0].Rows[j]["Platform"]);
+
                                 //string value = MPlatform.CompareTo(LastChar);
 
                                 result = sb.IndexOf(MPlatform.Trim());
@@ -392,7 +395,8 @@ namespace IndependentPlannerML
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                                        LastChar, STATUS);
+                                        LastChar,
+                                        STATUS);
                                 }
                                 else
                                 {
@@ -403,7 +407,8 @@ namespace IndependentPlannerML
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["HDSD"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Territories"]),
                                         Convert.ToString(Dsunique.Tables[0].Rows[i]["Hotel"]),
-                                        LastChar, STATUS);
+                                        LastChar,
+                                        STATUS);
 
                                 }
                             }
@@ -742,6 +747,120 @@ namespace IndependentPlannerML
             objsqlconn.Close();
             return ds;
         }
+
+        public async Task<string> InvokeRequestUnitTest(DataSet dsval, string APIKEY, string APIURL)
+        {
+            List<string> arr = new List<string>();
+
+            string Licenser = "";
+            string Release = "";
+            string HDSD = "";
+            string Terryterries = "";
+            string Hotel = "";
+            string Select = "";
+            for (int i = 0; i < dsval.Tables[0].Rows.Count; i++)
+            {
+                arr.Add(Convert.ToString(dsval.Tables[0].Rows[i]["Platform"]));
+
+            }
+
+            string result = "";
+            int j = 0;
+            using (var client = new HttpClient())
+            {
+                List<Dictionary<string, string>> dictionary = new List<Dictionary<string, string>>();
+
+                foreach (var item in arr)
+                {
+                    Licenser = Convert.ToString(dsval.Tables[0].Rows[j]["Licensor"]);
+                    Release = Convert.ToString(dsval.Tables[0].Rows[j]["Release"]);
+                    HDSD = Convert.ToString(dsval.Tables[0].Rows[j]["HDSD"]);
+                    Terryterries = Convert.ToString(dsval.Tables[0].Rows[j]["Territories"]);
+                    Hotel = Convert.ToString(dsval.Tables[0].Rows[j]["Hotel"]);
+                    Select = Convert.ToString(dsval.Tables[0].Rows[j]["Select"]);//
+                    j++;
+                    dictionary.Add(new Dictionary<string, string>()
+                            {              {
+                                                "Licensor", Licenser
+                                            },
+                                            {
+                                                "Release", Release
+                                            },
+                                            {
+                                                "HD/SD", HDSD
+                                            },
+                                            {
+                                                "Territories", Terryterries
+                                            },
+                                            {
+                                                "Hotel", "Yes"
+                                            },
+                                            {
+                                                "Platform", item
+                                            }
+                                            ,
+                                            {
+                                                "Select", null
+                                            },
+
+
+                              }
+                    );
+
+
+                }
+                var scoreRequest = new
+                {
+                    Inputs = new Dictionary<string, List<Dictionary<string, string>>>() {
+                        {
+                           "input1",dictionary
+
+                        },
+                    },
+                    GlobalParameters = new Dictionary<string, string>()
+                    {
+                    }
+                };
+
+
+                //        const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
+                //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+                //    client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+
+                // WARNING: The 'await' statement below can result in a deadlock if you are calling this code from the UI thread of an ASP.Net application.
+                // One way to address this would be to call ConfigureAwait(false) so that the execution does not attempt to resume on the original context.
+                // For instance, replace code such as:
+                //      result = await DoSomeTask()
+                // with the following:
+                //      result = await DoSomeTask().ConfigureAwait(false)
+
+                // ##################### API KEY and URL Dynamic Binding
+
+                string apiKey = APIKEY;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                client.BaseAddress = new Uri(APIURL);
+
+                // ######################
+
+
+                HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
+                string len = Convert.ToString(response.Content.Headers.ContentLength);
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                }
+
+
+            }
+            return result;
+        }
         public async Task<string> InvokeRequestResponseService(DataSet dsval)
         {
             List<string> arr = new List<string>();
@@ -817,10 +936,10 @@ namespace IndependentPlannerML
                 };
 
 
-                const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
+                 const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
-                client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+                 client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
 
                 // WARNING: The 'await' statement below can result in a deadlock if you are calling this code from the UI thread of an ASP.Net application.
                 // One way to address this would be to call ConfigureAwait(false) so that the execution does not attempt to resume on the original context.
@@ -828,6 +947,8 @@ namespace IndependentPlannerML
                 //      result = await DoSomeTask()
                 // with the following:
                 //      result = await DoSomeTask().ConfigureAwait(false)
+
+          
 
 
                 HttpResponseMessage response = await client.PostAsJsonAsync("", scoreRequest).ConfigureAwait(false);
@@ -1039,14 +1160,102 @@ namespace IndependentPlannerML
         //    return column1;
         //}
 
+        private DataTable ReteiveAPIKeyBASEAddress(string ReleaseType, string Studiotype)
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dtcat = new DataTable();
+            dtcat.Columns.Add("RT_Name");
+            dtcat.Columns.Add("RT_StudioType");
+            dtcat.Columns.Add("RT_URL");
+            dtcat.Columns.Add("RT_Key");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_ReleaseType", objsqlconn);
+            cmd.CommandTimeout = 12000;
+
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            cmd.Parameters.Add(new SqlParameter("@ReleaseType", ReleaseType));
+            cmd.Parameters.Add(new SqlParameter("@StudioType", Studiotype));
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dtcat.Rows.Add();
+                dtcat.Rows[m][0] = rdr["RT_Name"];
+                dtcat.Rows[m][1] = rdr["RT_StudioType"];
+                dtcat.Rows[m][2] = rdr["RT_URL"];
+                dtcat.Rows[m][3] = rdr["RT_Key"];
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dtcat;
+        }
+
+        private DataTable StudioWiseCategory(string StudioName)
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dtcat = new DataTable();
+            dtcat.Columns.Add("StudioCategory");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_GetStudioCategory", objsqlconn);
+            cmd.CommandTimeout = 12000;
+
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            cmd.Parameters.Add(new SqlParameter("@StudioName", StudioName));
+
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dtcat.Rows.Add();
+                dtcat.Rows[m][0] = rdr["StudioCategory"];
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dtcat;
+        }
+
         public DataTable GeneratePCTSForMLWithParameter(string Studio, string Release, string HDSD, string Territories, string Hotel, string StudioType)
         {
             DataTable dt = new DataTable();
             DataSet DsUnqe = new DataSet();
             dt.Columns.Add("Platform", typeof(string));
-            //dt.Columns.Add("ScoredLabels");
+            dt.Columns.Add("ScoredLabels", typeof(string));
             dt.Columns.Add("ScoredProbabilities", typeof(string));
             DataTable dty = new DataTable();
+            DataTable DtAPI = new DataTable();
+            DataTable StudioTyped = new DataTable();
 
             dty.Columns.Add("Studio");
             dty.Columns.Add("Release");
@@ -1065,7 +1274,7 @@ namespace IndependentPlannerML
             dty.Rows[0]["StudioType"] = StudioType;
             DsUnqe.Tables.Add(dty);
 
-
+            
 
             DataSet Dsbindunque = new DataSet();
            // DsUnqe = RetriveInputRecords();// Binding the unique Records for combination of Studio,Release,HDSD and Territories
@@ -1081,16 +1290,19 @@ namespace IndependentPlannerML
                        Convert.ToString(DsUnqe.Tables[0].Rows[i]["HDSD"]),
                        Convert.ToString(DsUnqe.Tables[0].Rows[i]["Territories"])
                         );
+                    // get the studio name and return studio type such as "ALL" or "PRORES" and "AVC30" 
+                    StudioTyped = StudioWiseCategory(Convert.ToString(DsUnqe.Tables[0].Rows[i]["Studio"]));
+                    // Given release Category and Studio type as Input and will take API keys and URL.
+                    DtAPI = ReteiveAPIKeyBASEAddress(Convert.ToString(DsUnqe.Tables[0].Rows[i]["Release"]), Convert.ToString(StudioTyped.Rows[0]["StudioCategory"]));
                     if (Dsbindunque != null && Dsbindunque.Tables[0].Rows.Count > 0)
                     {
                         int j = 0;
-                        var InvokeData = InvokeRequestResponseService(Dsbindunque);
+                        var InvokeData = InvokeRequestUnitTest(Dsbindunque, Convert.ToString(DtAPI.Rows[0]["RT_Key"]), Convert.ToString(DtAPI.Rows[0]["RT_URL"]));
                         var obj = JObject.Parse(InvokeData.Result);
                         var Val = obj["Results"]["output1"];
                         var serializer = new JavaScriptSerializer();
                         dynamic usr = serializer.DeserializeObject(Convert.ToString(Val));
 
-                        double d2 = 1.00;
                         foreach (var item in usr)
                         {
 
@@ -1101,7 +1313,6 @@ namespace IndependentPlannerML
                             string scoredprobabilities = string.Empty;
                             string result = string.Empty;
                             int p200 = 0;
-
                             foreach (KeyValuePair<string, object> pair in item)
                             {
                                 platform = pair.Key.ToString();
@@ -1125,11 +1336,12 @@ namespace IndependentPlannerML
                                 dt.Rows.Add();// Adding row into datatable
                                 if (Convert.ToInt32(scoredprobabilities.Substring(0, 1)) == 1)
                                 {
-                                    dt.Rows[i]["platform"] = platformvalue;
-                                    //dt.Rows[i]["scoredlabels"] = scoredlabels;
-                                    dt.Rows[i]["scoredprobabilities"] = d2;
-                                    i++;
+                                    scoredprobabilities = "100%";
                                 }
+                                dt.Rows[i]["platform"] = platformvalue;
+                                dt.Rows[i]["scoredlabels"] = scoredlabels;
+                                dt.Rows[i]["scoredprobabilities"] = scoredprobabilities;
+                                i++;
 
                             }
                             else
@@ -1139,34 +1351,44 @@ namespace IndependentPlannerML
                                 double per = Convert.ToDouble(result) * 100;
                                 p200 = Convert.ToInt32(per);
 
-                                //if (scoredlabels == "Y" && p200 > 60)
-                                //{
-                                //    dt.Rows.Add();// Adding row into datatable
-                                //    dt.Rows[i]["platform"] = platformvalue;
-                                //    dt.Rows[i]["scoredprobabilities"] = Math.Round(myInt, 2);
-                                //    i++;
-                                //}
-                                //else
-                                //{
+                                // // Gets a NumberFormatInfo associated with the en-US culture.
+                                //NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+                                // // Displays a value with the default number of decimal digits (2).
+                                // Double myInt = Convert.ToDouble(scoredprobabilities);
+                                // int val = Convert.ToInt32(myInt.ToString("P", nfi).Substring(0, 1));
 
-                                //}
+                                // if (val != 0 && val > 2)
+                                // {
+                                //     dt.Rows.Add();// Adding row into datatable
+                                //     dt.Rows[i]["platform"] = platformvalue;
+                                //     dt.Rows[i]["scoredlabels"] = scoredlabels;
+                                //     dt.Rows[i]["scoredprobabilities"] = myInt.ToString("P", nfi);
+                                //     i++;
+                                //     // dt.Rows.Add();// Adding row into datatable
+                                // }
+                                // else
+                                // {
+
+                                // }
+
                                 if (scoredlabels == "Y")
                                 {
                                     dt.Rows.Add();// Adding row into datatable
                                     dt.Rows[i]["platform"] = platformvalue;
-                                    dt.Rows[i]["scoredprobabilities"] = Math.Round(myInt, 2);
+                                    dt.Rows[i]["scoredlabels"] = scoredlabels;
+                                    dt.Rows[i]["scoredprobabilities"] = Convert.ToString(Math.Round(myInt, 2)* 100 +"%");
                                     i++;
                                 }
                                 else
                                 {
 
                                 }
-
                             }
 
 
 
                         }
+
                     }
                 }
 
@@ -1308,14 +1530,10 @@ namespace IndependentPlannerML
 
                 string Predict = ConvertDatatableToCommaSeperatedValues(DtExpected, "Platform");
                 string Actual = ConvertDataSetToCommaSeperatedValues(DsActual, "PCT");
-             
 
-
-                //dt.DefaultView.Sort = Column;
-
-                if (Predict == Actual)
+                int MatchCount = Actual.IndexOf(Actual);
+                if(MatchCount==0)
                 {
-                  
                     InsertPCTsMatch(Studio, Release, HDSD, Territories, "Success");
                 }
                 else
@@ -1328,18 +1546,38 @@ namespace IndependentPlannerML
                     {
                         InsertPCTsMatch(Studio, Release, HDSD, Territories, "NotExists");
                     }
-                    
                 }
+              
+
+                //dt.DefaultView.Sort = Column;
+
+                //if (Predict == Actual)
+                //{
+
+                //    InsertPCTsMatch(Studio, Release, HDSD, Territories, "Success");
+                //}
+                //else
+                //{
+                //    if (Predict != "")
+                //    {
+                //        InsertPCTsMatch(Studio, Release, HDSD, Territories, "Failed");
+                //    }
+                //    else
+                //    {
+                //        InsertPCTsMatch(Studio, Release, HDSD, Territories, "NotExists");
+                //    }
+
+                //}
 
 
                 //Assert.AreEqual(Actual, DtExpected);
                 // Assert.AreEqual(act, act1);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                //throw;
             }
 
 

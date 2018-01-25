@@ -65,7 +65,6 @@ namespace IndependentPlannerML
             while (rdr.Read())
             {
                 dt.Rows.Add();
-                //dt.Rows[m][0] = rdr["StudioCategory"];
                 dt.Rows[m][0] = rdr["StudioName"];
                 dt.Rows[m][1] = rdr["StudioName"];
 
@@ -78,6 +77,95 @@ namespace IndependentPlannerML
             return dt;
         }
 
+
+        // Fetching Input data records from database
+        private DataTable StudioWiseCategory(string StudioName)
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dtcat = new DataTable();
+            dtcat.Columns.Add("StudioCategory");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_GetStudioCategory", objsqlconn);
+            cmd.CommandTimeout = 12000;
+
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            cmd.Parameters.Add(new SqlParameter("@StudioName", StudioName));
+
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dtcat.Rows.Add();
+                dtcat.Rows[m][0] = rdr["StudioCategory"];
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dtcat;
+        }
+
+
+        // Fetching Input data records from database
+        private DataTable ReteiveAPIKeyBASEAddress(string ReleaseType, string Studiotype)
+        {
+            string connectionnstring = "";
+            SqlDataReader rdr = null;
+            DataTable dtcat = new DataTable();
+            dtcat.Columns.Add("RT_Name");
+            dtcat.Columns.Add("RT_StudioType");
+            dtcat.Columns.Add("RT_URL");
+            dtcat.Columns.Add("RT_Key");
+            connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            objsqlconn.Open();
+            // 1. create a command object identifying
+            // the stored procedure
+            SqlCommand cmd = new SqlCommand("USP_ReleaseType", objsqlconn);
+            cmd.CommandTimeout = 12000;
+
+            // 2. set the command object so it knows
+            // to execute a stored procedure
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // 3. add parameter to command, which
+            // will be passed to the stored procedure
+            cmd.Parameters.Add(new SqlParameter("@ReleaseType", ReleaseType));
+            cmd.Parameters.Add(new SqlParameter("@StudioType", Studiotype));
+            // execute the command
+            rdr = cmd.ExecuteReader();
+
+            // iterate through results, printing each to console
+            int m = 0;
+            while (rdr.Read())
+            {
+                dtcat.Rows.Add();
+                dtcat.Rows[m][0] = rdr["RT_Name"];
+                dtcat.Rows[m][1] = rdr["RT_StudioType"];
+                dtcat.Rows[m][2] = rdr["RT_URL"];
+                dtcat.Rows[m][3] = rdr["RT_Key"];
+                m++;
+
+            }
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            objsqlconn.Close();
+            return dtcat;
+        }
         // Bind the Licensor dropdownlist
         private void LicenserBind()
         {
@@ -235,7 +323,7 @@ namespace IndependentPlannerML
             DataTable dt = new DataTable();
 
             dt.Columns.Add("Platform");
-           // dt.Columns.Add("select");
+            dt.Columns.Add("select");
             dt.Columns.Add("HDSD");
             dt.Columns.Add("Territories");
             dt.Columns.Add("Licensor");
@@ -276,12 +364,12 @@ namespace IndependentPlannerML
             {
                 dt.Rows.Add();
                 dt.Rows[m][0] = rdr["Platform"];
-                //dt.Rows[m][1] = rdr["select"];
-                dt.Rows[m][1] = rdr["HDSD"];
-                dt.Rows[m][2] = rdr["Territories"];
-                dt.Rows[m][3] = rdr["Licensor"];
-                dt.Rows[m][4] = rdr["Release"];
-                dt.Rows[m][5] = rdr["Hotel"];
+                dt.Rows[m][1] = rdr["select"];
+                dt.Rows[m][2] = rdr["HDSD"];
+                dt.Rows[m][3] = rdr["Territories"];
+                dt.Rows[m][4] = rdr["Licensor"];
+                dt.Rows[m][5] = rdr["Release"];
+                dt.Rows[m][6] = rdr["Hotel"];
                 m++;
 
             }
@@ -289,6 +377,65 @@ namespace IndependentPlannerML
             ds.Tables.Add(dt);
             objsqlconn.Close();
             return ds;
+            //string connectionnstring = "";
+            //SqlDataReader rdr = null;
+            //DataTable dt = new DataTable();
+
+            //dt.Columns.Add("Platform");
+            //// dt.Columns.Add("select");
+            //dt.Columns.Add("HDSD");
+            //dt.Columns.Add("Territories");
+            //dt.Columns.Add("Licensor");
+            //dt.Columns.Add("Release");
+            //dt.Columns.Add("Hotel");
+
+
+            //connectionnstring = ConfigurationManager.ConnectionStrings["Conn"].ToString();
+            //SqlConnection objsqlconn = new SqlConnection(connectionnstring);
+            //objsqlconn.Open();
+
+            //// 1. create a command object identifying
+            //// the stored procedure
+            //SqlCommand cmd = new SqlCommand("Usp_ReadPlatform", objsqlconn); // Usp_ReadPlatform (Old one 20202 records)
+            //cmd.CommandTimeout = 12000;
+
+            //// 2. set the command object so it knows
+            //// to execute a stored procedure
+            //cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.Parameters.Add(new SqlParameter("@Title", Title));
+
+            //// For Troubleshooting 
+            //cmd.Parameters.Add(new SqlParameter("@Release", Release));
+            //cmd.Parameters.Add(new SqlParameter("@HDSD", HDSD));
+            //cmd.Parameters.Add(new SqlParameter("@Territories", Territories));
+
+
+            //// 3. add parameter to command, which
+            //// will be passed to the stored procedure
+            ////cmd.Parameters.Add(new SqlParameter("@CustomerID", custId));
+
+            //// execute the command
+            //rdr = cmd.ExecuteReader();
+
+            //// iterate through results, printing each to console
+            //int m = 0;
+            //while (rdr.Read())
+            //{
+            //    dt.Rows.Add();
+            //    dt.Rows[m][0] = rdr["Platform"];
+            //    //dt.Rows[m][1] = rdr["select"];
+            //    dt.Rows[m][1] = rdr["HDSD"];
+            //    dt.Rows[m][2] = rdr["Territories"];
+            //    dt.Rows[m][3] = rdr["Licensor"];
+            //    dt.Rows[m][4] = rdr["Release"];
+            //    dt.Rows[m][5] = rdr["Hotel"];
+            //    m++;
+
+            //}
+            //DataSet ds = new DataSet();
+            //ds.Tables.Add(dt);
+            //objsqlconn.Close();
+            //return ds;
         }
 
         protected void Button1_Click(object sender, EventArgs e)
@@ -299,16 +446,24 @@ namespace IndependentPlannerML
                 dt.Columns.Add("Platform");
                 dt.Columns.Add("ScoredLabels");
                 dt.Columns.Add("ScoredProbabilities");
+                DataTable StudioType = new DataTable();
+                DataTable DtAPI = new DataTable();
                 DataSet dss = new DataSet();
                 //drpstudio.SelectedValue
                 dss = MasterPlannerRecords(drpstudio.SelectedValue, Drprelease.SelectedValue, Drphdsd.SelectedValue, DrpTerritories.SelectedValue);
+                // Getting Category through Studio Name
+                StudioType= StudioWiseCategory(drpstudio.SelectedValue);
+
+                // retrieving API Key and BaseAddress using ReleaseType and StudioType
+
+                DtAPI=ReteiveAPIKeyBASEAddress(Drprelease.SelectedValue, Convert.ToString(StudioType.Rows[0]["StudioCategory"]));
 
                 if (dss !=null && dss.Tables[0].Rows.Count > 0)
                 {
                     int i = 0;
-                    //var InvokeData = InvokeRequestResponseService(dss); // Previous Invoke function (Without comma separated)
+                      var InvokeData = InvokeRequestResponseService(dss, Convert.ToString(DtAPI.Rows[0]["RT_Key"]), Convert.ToString(DtAPI.Rows[0]["RT_URL"]));
+                  //  var InvokeData = InvokeRequestResponseServicePCTsWithComma(dss);
 
-                    var InvokeData = InvokeRequestResponseServicePCTsWithComma(dss);
                     //InvokeData.Wait();
                     //string reciveData = InvokeData.Result;
 
@@ -413,7 +568,7 @@ namespace IndependentPlannerML
                 }
          
             }
-            catch (Exception ex)
+            catch (Exception)
             {
               
             }
@@ -422,7 +577,7 @@ namespace IndependentPlannerML
         
        
 
-        public async Task<string> InvokeRequestResponseService(DataSet dsval)
+        public async Task<string> InvokeRequestResponseService(DataSet dsval,string APIKEY,string APIURL)
         {
             List<string> arr = new List<string>();
             //arr.Add("TVN_LIBRARY_INDEPENDENT_H264");
@@ -530,12 +685,34 @@ namespace IndependentPlannerML
                 };
 
 
-                const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
+                // Old Mine APIKEY 
+
+                //const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
+                // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+                //client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+                // ######################################
+
+
+                // New API KEY For Ratings.V2@outlook.com
+                //   const string apiKey = "PJMZCYOrnTg51ahKe5IewP0WZsS2NZQsvgYoR5qhH7KAODRWgm8+F1yVrdf54cy0J9zCjW65opmvNZCIh7pZPQ=="; // Replace this with the API key for the web service
+                //  client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                // client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2b8bed4f6390463997d08b708f7e6151/services/977532eb83dd479ea823c4c4d5d254f9/execute?api-version=2.0&format=swagger");
+                //  client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2b8bed4f6390463997d08b708f7e6151/services/edd6b88cbcef4a61aa61ec540e57a174/execute?api-version=2.0&format=swagger");
+
+
+                //   https://ussouthcentral.services.azureml.net/workspaces/2b8bed4f6390463997d08b708f7e6151/services/42d45dea097847689b6877016c1b71a3/execute?api-version=2.0&format=swagger
+
+
+                // ############# Set Dynamic Binding key and BaseAddress
+                string apiKey = APIKEY;
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                client.BaseAddress = new Uri(APIURL);
+               
 
-                client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+                // #####################
 
-                // WARNING: The 'await' statement below can result in a deadlock if you are calling this code from the UI thread of an ASP.Net application.
+                // The 'await' statement below can result in a deadlock if you are calling this code from the UI thread of an ASP.Net application.
                 // One way to address this would be to call ConfigureAwait(false) so that the execution does not attempt to resume on the original context.
                 // For instance, replace code such as:
                 //      result = await DoSomeTask()
@@ -585,6 +762,9 @@ namespace IndependentPlannerML
         // New way to start written code 04/12/2017 11:04AM
 
 
+        // New way to start written code 04/12/2017 11:04AM
+
+
         public async Task<string> InvokeRequestResponseServicePCTsWithComma(DataSet dsval)
         {
             List<string> arr = new List<string>();
@@ -620,7 +800,7 @@ namespace IndependentPlannerML
                     HDSD = Convert.ToString(dsval.Tables[0].Rows[j]["HDSD"]);
                     Terryterries = Convert.ToString(dsval.Tables[0].Rows[j]["Territories"]);
                     Hotel = Convert.ToString(dsval.Tables[0].Rows[j]["Hotel"]);
-                   // Select = Convert.ToString(dsval.Tables[0].Rows[j]["Select"]);//
+                    // Select = Convert.ToString(dsval.Tables[0].Rows[j]["Select"]);//
                     j++;
                     dictionary.Add(new Dictionary<string, string>()
                             {
@@ -656,15 +836,18 @@ namespace IndependentPlannerML
                                                 "HDSD", HDSD
                                             },
                                             {
-                                                "Territories", Terryterries  
+                                                "Territories", Terryterries
                                             },
                                             {
                                                 "Hotel", "Yes"
                                             },
-                                            {
-                                                "Platform", item
+                                            //{
+                                            //    "Platform", item
+                                            //}
+                                             {
+                                                "ID", null
                                             }
-                                          
+
 
                               }
                     );
@@ -689,10 +872,16 @@ namespace IndependentPlannerML
                 };
 
 
-                const string apiKey = "sDu/W7+N+14aW+i10z28+mGTh8u/ZFgqSTH8fze5nXGCyfoNs8PxaPOvC4feZWB5tfHXPft1R/oBXT0mc1otyw=="; // Replace this with the API key for the web service
+                //  const string apiKey = "sDu/W7+N+14aW+i10z28+mGTh8u/ZFgqSTH8fze5nXGCyfoNs8PxaPOvC4feZWB5tfHXPft1R/oBXT0mc1otyw=="; // Replace this with the API key for the web service
+                //  client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+                //client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/8352056fa2664c3685bb3ee952c56e5f/execute?api-version=2.0&details=true");
+
+                const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
-                client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/8352056fa2664c3685bb3ee952c56e5f/execute?api-version=2.0&details=true");
+                client.BaseAddress = new Uri("https://ussouthcentral.services.azureml.net/workspaces/2c9d645c7c874a329efa3850e3808afe/services/9e9fc70bbaa04d6f9782b638c7d28b25/execute?api-version=2.0&format=swagger");
+
 
                 //const string apiKey = "L7USA2DaVFdA913UDQO8UkhzOBzs1HIKk0SCFdIkl39npHxmsz1yW1Oj7ca8TbF6av7sAwPWuJ8hqFmO6ITCRw=="; // Replace this with the API key for the web service
                 //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);

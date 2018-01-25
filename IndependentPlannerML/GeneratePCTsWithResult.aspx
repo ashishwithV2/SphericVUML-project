@@ -17,6 +17,7 @@
     <script src="js/jquery.min.js"></script>
 
 
+
 <style type="text/css">
     .bs-example{
     	margin: 100px;
@@ -39,12 +40,6 @@
  
 }
  </style>
-
- 
-
-
-
-
 
     <link href="css/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -70,6 +65,7 @@
                
         //    });
         //});
+
         $(function () {
             $('[id*=Drphdsd]').multiselect({
                 includeSelectAllOption: true
@@ -81,11 +77,7 @@
             $('[id*=Drprelease]').multiselect({
                 includeSelectAllOption: true
             });
-
             
-            
-
-
         });
     </script>
 
